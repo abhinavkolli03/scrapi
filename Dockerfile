@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED=1
 # Install system dependencies
 RUN apt-get update && apt-get install -y supervisor curl wget gnupg unzip libnss3 libasound2 libgbm-dev
 
+RUN apt-get install -y chromium
+
 # Copy your requirements.txt and install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --upgrade pip

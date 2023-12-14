@@ -1,29 +1,43 @@
 import json
 from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
+
+def extract_api_information(page):
+    # Extract information from different sections of the page
+    api_intro = page.inner_html('section:has-text("API Reference")')
+    authentication = page.inner_html('section:has-text("Authentication")')
+    authenticated_request = page.inner_html('section:has-text("AUTHENTICATED REQUEST")')
+    errors = page.inner_html('section:has-text("Errors")')
+    print("hello")
+
+    # Create labeled JSON objects for each section
+    api_info = {
+        "API Reference": api_intro,
+        "Authentication": authentication,
+        "Authenticated Request": authenticated_request,
+        "Errors": errors
+    }
+
+    return api_info
+
+def extract_meaningful_text(api_info):
+    soup = BeautifulSoup(api_info, 'html.parser', from_encoding='utf-8')
+    meaningful_data = soup.find('div').get_text()
+    return meaningful_data
 
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
 
-        page.goto("https://playwright.dev/")
-
-        title = page.title()
-        print(f"Page Title: {title}")
-
-        get_started_link = page.get_by_role("link", name="Get started")
-        if get_started_link:
-            get_started_link.click()
-            installation_heading = page.get_by_role("heading", name="Installation").is_visible()
-            print(f"Installation Heading Visible: {installation_heading}")
-
-        results = {
-            "title": title,
-            "installation_heading_visible": installation_heading if "installation_heading" in locals() else None
-        }
-
-        with open("results.json", "w") as json_file:
-            json.dump(results, json_file)
+        page.goto("https://stripe.com/docs/api", timeout=100000)
+        
+        # Extract API information
+        api_info = extract_api_information(page)
+        
+        meaningful_data = extract_meaningful_text(api_info)
+        
+        print(meaningful_data)
 
         browser.close()
 
