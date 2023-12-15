@@ -1,0 +1,26 @@
+{
+  "name": "scrapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "scraper": "node scraper.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavkolli03/scrapi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhinavkolli03/scrapi/issues"
+  },
+  "homepage": "https://github.com/abhinavkolli03/scrapi#readme",
+  "dependencies": {
+    "playwright": "^1.40.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  }
+}

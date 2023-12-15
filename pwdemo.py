@@ -1,45 +1,38 @@
+from playwright.async_api import async_playwright
+import asyncio
 import json
-from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
 
-def extract_api_information(page):
-    # Extract information from different sections of the page
-    api_intro = page.inner_html('section:has-text("API Reference")')
-    authentication = page.inner_html('section:has-text("Authentication")')
-    authenticated_request = page.inner_html('section:has-text("AUTHENTICATED REQUEST")')
-    errors = page.inner_html('section:has-text("Errors")')
-    print("hello")
-
-    # Create labeled JSON objects for each section
-    api_info = {
-        "API Reference": api_intro,
-        "Authentication": authentication,
-        "Authenticated Request": authenticated_request,
-        "Errors": errors
-    }
-
-    return api_info
-
-def extract_meaningful_text(api_info):
-    soup = BeautifulSoup(api_info, 'html.parser', from_encoding='utf-8')
-    meaningful_data = soup.find('div').get_text()
-    return meaningful_data
-
-def main():
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-
-        page.goto("https://stripe.com/docs/api", timeout=100000)
+async def main():
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(
+            headless=False
+        )
         
-        # Extract API information
-        api_info = extract_api_information(page)
+        page = await browser.new_page()
+        await page.goto('https://www.amazon.com/b?node=17938598011')
+        await page.wait_for_timeout(5000)
         
-        meaningful_data = extract_meaningful_text(api_info)
+        all_products = await page.query_selector_all('.a-spacing-base')
+        data = []
+        for product in all_products:
+            result = dict()
+            
+            title_el = await product.query_selector('span.a-size-base-plus')
+            result['title'] = await title_el.inner_text()
+            
+            price_el = await product.query_selector('span.a-price')
+            result['price'] = await price_el.inner_text()
+            
+            rating_el = await product.query_selector('span.a-icon-alt')
+            result['rating'] = await rating_el.inner_text()
+
+            data.append(result)
         
-        print(meaningful_data)
-
-        browser.close()
-
-if __name__ == "__main__":
-    main()
+        with open("results.json", "w") as file:
+            json.dump(data, file, indent=4)
+            
+        await browser.close()
+        
+        
+if __name__ == '__main__':
+    asyncio.run(main())
