@@ -1,0 +1,812 @@
+[
+    {
+        "h1 1": "API Reference",
+        "h2 1": "Just getting started?",
+        "h2 2": "Not a developer?",
+        "code 1": "https://api.stripe.com",
+        "code 2": "https://api.stripe.com",
+        "p 1": "The Stripe API is organized around REST. Our API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs.",
+        "p 2": "You can use the Stripe API in test mode, which doesn\u2019t affect your live data or interact with the banking networks. The API key you use to authenticate the request determines whether the request is live mode or test mode.",
+        "p 3": "The Stripe API doesn\u2019t support bulk updates. You can work on only one object per request.",
+        "p 4": "The Stripe API differs for every account as we release new versions and tailor functionality. Log in to see docs customized to your version of the API, with your test key and data.",
+        "p 5": "Check out our development quickstart guide.",
+        "p 6": "Use Stripe\u2019s no-code options or apps from our partners to get started with Stripe and to do more with your Stripe account\u2014no code required.",
+        "p 7": "By default, the Stripe API Docs demonstrate using curl to interact with the API over HTTP. Select one of our official client libraries to see examples in code."
+    },
+    {
+        "h1 1": "Authentication",
+        "code 1": "sk_test_",
+        "code 2": "sk_live_",
+        "code 3": "curl https://api.stripe.com/v1/charges \\\n  -u sk_test_4eC39Hq...arjtT1zdp7dc\nsk_test_4eC39HqLyjWDarjtT1zdp7dc\n:\n# The colon prevents curl from asking for a password.",
+        "code 4": "curl https://api.stripe.com/v1/charges \\",
+        "code 5": "  -u sk_test_4eC39Hq...arjtT1zdp7dc\nsk_test_4eC39HqLyjWDarjtT1zdp7dc\n:",
+        "code 6": "# The colon prevents curl from asking for a password.",
+        "p 1": "The Stripe API uses API keys to authenticate requests. You can view and manage your API keys in the Stripe Dashboard.",
+        "p 2": "Test mode secret keys have the prefix sk_test_ and live mode secret keys have the prefix sk_live_. Alternatively, you can use restricted API keys for granular permissions.",
+        "p 3": "Your API keys carry many privileges, so be sure to keep them secure! Do not share your secret API keys in publicly accessible areas such as GitHub, client-side code, and so forth.",
+        "p 4": "All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.",
+        "p 5": "A sample test API key is included in all the examples here, so you can test any example right away. Do not submit any personally identifiable information in requests made with this key.",
+        "p 6": "To test requests using your account, replace the sample API key with your actual API key or sign in."
+    },
+    {
+        "h1 1": "Connected Accounts",
+        "code 1": "Stripe-Account",
+        "code 2": "acct_",
+        "code 3": "curl https://api.stripe.com/v1/charges/ch_3LmjFA2eZvKYlo2C09TLIsrw \\\n  -u sk_test_4eC39Hq...arjtT1zdp7dc\nsk_test_4eC39HqLyjWDarjtT1zdp7dc\n: \\\n  -H \"Stripe-Account: acct_1032D82eZvKYlo2C\" \\\n  -G",
+        "code 4": "curl https://api.stripe.com/v1/charges/ch_3LmjFA2eZvKYlo2C09TLIsrw \\",
+        "code 5": "  -u sk_test_4eC39Hq...arjtT1zdp7dc\nsk_test_4eC39HqLyjWDarjtT1zdp7dc\n: \\",
+        "code 6": "  -H \"Stripe-Account: acct_1032D82eZvKYlo2C\" \\",
+        "code 7": "  -G",
+        "p 1": "To act as connected accounts, clients can issue requests using the Stripe-Account special header. Make sure that this header contains a Stripe account ID, which usually starts with the acct_ prefix.",
+        "p 2": "The value is set per-request as shown in the adjacent code sample. Methods on the returned object reuse the same account ID."
+    },
+    {
+        "h1 1": "Errors",
+        "code 1": "2xx",
+        "code 2": "4xx",
+        "code 3": "5xx",
+        "code 4": "4xx",
+        "code 5": "api_error",
+        "code 6": "card_error",
+        "code 7": "idempotency_error",
+        "code 8": "invalid_request_error",
+        "code 9": "api_error",
+        "code 10": "card_error",
+        "code 11": "idempotency_error",
+        "code 12": "invalid_request_error",
+        "code 13": "api_error",
+        "code 14": "card_error",
+        "code 15": "idempotency_error",
+        "code 16": "Idempotency-Key",
+        "code 17": "invalid_request_error",
+        "p 1": "Stripe uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Stripe\u2019s servers (these are rare).",
+        "p 2": "Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.",
+        "p 3": "The type of error returned. One of api_error, card_error, idempotency_error, or invalid_request_error",
+        "p 4": "For some errors that could be handled programmatically, a short string indicating the error code reported.",
+        "p 5": "For card errors resulting from a card issuer decline, a short string indicating the card issuer\u2019s reason for the decline if they provide one.",
+        "p 6": "A human-readable message providing more details about the error. For card errors, these messages can be shown to your users.",
+        "p 7": "If the error is parameter-specific, the parameter related to the error. For example, you can use this to display a message near the correct form field.",
+        "p 8": "The PaymentIntent object for errors returned on a request involving a PaymentIntent."
+    },
+    {
+        "h1 1": "Handling errors",
+        "p 1": "Our Client libraries raise exceptions for many reasons, such as a failed charge, invalid parameters, authentication errors, and network unavailability. We recommend writing code that gracefully handles all possible API exceptions."
+    },
+    {
+        "h1 1": "Expanding Responses",
+        "code 1": "expand",
+        "code 2": "Charge",
+        "code 3": "expandable",
+        "code 4": "number",
+        "code 5": "cvc",
+        "code 6": "expand",
+        "code 7": ".",
+        "code 8": "invoice.subscription",
+        "code 9": "invoice",
+        "code 10": "subscription",
+        "code 11": "expand",
+        "code 12": "data",
+        "code 13": "data.customers",
+        "code 14": "data.invoice.subscription.default_source",
+        "code 15": "expand",
+        "p 1": "Many objects allow you to request additional information as an expanded response by using the expand request parameter. This parameter is available on all API requests, and applies to the response of that request only. You can expand responses in two ways.",
+        "p 2": "In many cases, an object contains the ID of a related object in its response properties. For example, a Charge might have an associated Customer ID. You can expand these objects in line with the expand request parameter. The expandable label in this documentation indicates ID fields that you can expand into objects.",
+        "p 3": "Some available fields aren\u2019t included in the responses by default, such as the number and cvc fields for the Issuing Card object. You can request these fields as an expanded response by using the expand request parameter.",
+        "p 4": "You can expand recursively by specifying nested fields after a dot (.). For example, requesting invoice.subscription on a charge expands the invoice property into a full Invoice object, then expands the subscription property on that invoice into a full Subscription object.",
+        "p 5": "You can use the expand parameter on any endpoint that returns expandable fields, including list, create, and update endpoints.",
+        "p 6": "Expansions on list requests start with the data property. For example, you can expand data.customers on a request to list charges and associated customers. Performing deep expansions on numerous list requests might result in slower processing times.",
+        "p 7": "Expansions have a maximum depth of four levels (for example, the deepest expansion allowed when listing charges is data.invoice.subscription.default_source).",
+        "p 8": "You can expand multiple objects at the same time by identifying multiple items in the expand array."
+    },
+    {
+        "h1 1": "Idempotent requests",
+        "code 1": "IdempotencyKey",
+        "code 2": "500",
+        "code 3": "POST",
+        "code 4": "GET",
+        "code 5": "DELETE",
+        "p 1": "The API supports idempotency for safely retrying requests without accidentally performing the same operation twice. When creating or updating an object, use an idempotency key. Then, if a connection error occurs, you can safely repeat the request without risk of creating a second object or performing the update twice.",
+        "p 2": "To perform an idempotent request, provide an additional IdempotencyKey element to the request options.",
+        "p 3": "Stripe\u2019s idempotency works by saving the resulting status code and body of the first request made for any given idempotency key, regardless of whether it succeedes or fails. Subsequent requests with the same key return the same result, including 500 errors.",
+        "p 4": "A client generates an idempotency key, which is a unique key that the server uses to recognize subsequent retries of the same request. How you create unique keys is up to you, but we suggest using V4 UUIDs, or another random string with enough entropy to avoid collisions. Idempotency keys are up to 255 characters long.",
+        "p 5": "You can remove keys from the system automatically after they\u2019re at least 24 hours old. We generate a new request if a key is reused after the original is pruned. The idempotency layer compares incoming parameters to those of the original request and errors if they\u2019re the same to prevent accidental misuse.",
+        "p 6": "We save results only after the execution of an endpoint begins. If incoming parameters fail validation, or the request conflicts with another request that\u2019s executing concurrently, we don\u2019t save the idempotent result because no API endpoint initiates the execution. You can retry these requests. Learn more about when you can retry idempotent requests.",
+        "p 7": "All POST requests accept idempotency keys. Don\u2019t send idempotency keys in GET and DELETE requests because it has no effect. These requests are idempotent by definition."
+    },
+    {
+        "h1 1": "Metadata",
+        "h2 1": "Sample metadata use cases",
+        "code 1": "metadata",
+        "code 2": "description",
+        "code 3": "description",
+        "code 4": "2 shirts for test@example.com",
+        "code 5": "metadata",
+        "code 6": "description",
+        "code 7": "description",
+        "p 1": "Updateable Stripe objects\u2014including Account, Charge, Customer, PaymentIntent, Refund, Subscription, and Transfer have a metadata parameter. You can use this parameter to attach key-value data to these Stripe objects.",
+        "p 2": "You can specify up to 50 keys, with key names up to 40 characters long and values up to 500 characters long.",
+        "p 3": "You can use metadata to store additional, structured information on an object. For example, you could store your user\u2019s full name and corresponding unique identifier from your system on a Stripe Customer object. Stripe doesn\u2019t use metadata\u2014for example, we don\u2019t use it to authorize or decline a charge and it won\u2019t be seen by your users unless you choose to show it to them.",
+        "p 4": "Some of the objects listed above also support a description parameter. You can use the description parameter to annotate a charge-for example, a human-readable description such as 2 shirts for test@example.com. Unlike metadata, description is a single string, which your users might see (for example, in email receipts Stripe sends on your behalf).",
+        "p 5": "Don\u2019t store any sensitive information (bank account numbers, card details, and so on) as metadata or in the description parameter."
+    },
+    {
+        "h1 1": "Pagination",
+        "code 1": "limit",
+        "code 2": "starting_after",
+        "code 3": "ending_before",
+        "code 4": "starting_after",
+        "code 5": "ending_before",
+        "code 6": "ending_before",
+        "code 7": "starting_after",
+        "code 8": "starting_after",
+        "code 9": "ending_before",
+        "code 10": "starting_after",
+        "code 11": "obj_foo",
+        "code 12": "starting_after=obj_foo",
+        "code 13": "ending_before",
+        "code 14": "obj_bar",
+        "code 15": "ending_before=obj_bar",
+        "code 16": "false",
+        "p 1": "All top-level API resources have support for bulk fetches through \u201clist\u201d API methods. For example, you can list charges, list customers, and list invoices. These list API methods share a common structure and accept, at a minimum, the following three parameters: limit, starting_after, and ending_before.",
+        "p 2": "Stripe\u2019s list API methods use cursor-based pagination through the starting_after and ending_before parameters. Both parameters accept an existing object ID value (see below) and return objects in reverse chronological order. The ending_before parameter returns objects listed before the named object. The starting_after parameter returns objects listed after the named object. These parameters are mutually exclusive. You can use either the starting_after or ending_before parameter, but not both simultaneously.",
+        "p 3": "Our client libraries offer auto-pagination helpers to traverse all pages of a list.",
+        "p 4": "This specifies a limit on the number of objects to return, ranging between 1 and 100.",
+        "p 5": "A cursor to use in pagination. starting_after is an object ID that defines your place in the list. For example, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include starting_after=obj_foo to fetch the next page of the list.",
+        "p 6": "A cursor to use in pagination. ending_before is an object ID that defines your place in the list. For example, if you make a list request and receive 100 objects, starting with obj_bar, your subsequent call can include ending_before=obj_bar to fetch the previous page of the list.",
+        "p 7": "A string that provides a description of the object type that returns.",
+        "p 8": "An array containing the actual response elements, paginated by any request parameters.",
+        "p 9": "Whether or not there are more elements available after this set. If false, this set comprises the end of the list.",
+        "p 10": "The URL for accessing this list."
+    },
+    {
+        "h1 1": "Search",
+        "code 1": "page",
+        "code 2": "next_page",
+        "code 3": "\"next_page\": \"pagination_key\"",
+        "code 4": "page=pagination_key",
+        "code 5": "next_page",
+        "code 6": "false",
+        "code 7": "has_more",
+        "code 8": "next_page",
+        "code 9": "total_count",
+        "p 1": "Some top-level API resource have support for retrieval via \u201csearch\u201d API methods. For example, you can search charges, search customers, and search subscriptions.",
+        "p 2": "Stripe\u2019s search API methods utilize cursor-based pagination via the page request parameter and next_page response parameter. For example, if you make a search request and receive \"next_page\": \"pagination_key\" in the response, your subsequent call can include page=pagination_key to fetch the next page of results.",
+        "p 3": "Our client libraries offer auto-pagination helpers to easily traverse all pages of a search result.",
+        "p 4": "The search query string. See search query language.",
+        "p 5": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 10.",
+        "p 6": "A cursor for pagination across multiple pages of results. Don\u2019t include this parameter on the first call. Use the next_page value returned in a previous response to request subsequent results.",
+        "p 7": "A string describing the object type returned.",
+        "p 8": "The URL for accessing this list.",
+        "p 9": "Whether or not there are more elements available after this set. If false, this set comprises the end of the list.",
+        "p 10": "An array containing the actual response elements, paginated by any request parameters.",
+        "p 11": "A cursor for use in pagination. If has_more is true, you can pass the value of next_page to a subsequent call to fetch the next page of results.",
+        "p 12": "The total number of objects that match the query, only accurate up to 10,000. This field is not included by default. To include it in the response, expand the total_count field."
+    },
+    {
+        "h1 1": "Auto-pagination",
+        "p 1": "Our libraries support auto-pagination. This feature allows you to easily iterate through large lists of resources without having to manually perform the requests to fetch subsequent pages."
+    },
+    {
+        "h1 1": "Request IDs",
+        "code 1": "Request-Id",
+        "p 1": "Each API request has an associated request identifier. You can find this value in the response headers, under Request-Id. You can also find request identifiers in the URLs of individual request logs in your Dashboard.",
+        "p 2": "To expedite the resolution process, provide the request identifier when you contact us about a specific request."
+    },
+    {
+        "h1 1": "Versioning",
+        "p 1": "When backwards-incompatible changes are made to the API, we release a new, dated version. The current version is 2023-10-16. Learn more about API upgrades and backwards compatibility. For information on all API updates, view our API changelog.",
+        "p 2": "You can upgrade your API version in the Developer Dashboard. As a precaution, use API versioning to test a new API version before committing to an upgrade."
+    },
+    {
+        "h1 1": "Balance",
+        "p 1": "This is an object representing your Stripe balance. You can retrieve it to see the balance currently on your Stripe account.",
+        "p 2": "You can also retrieve the balance history, which contains a list of transactions that contributed to the balance (charges, payouts, and so forth).",
+        "p 3": "The available and pending amounts for each currency are broken down further by payment source types.",
+        "p 4": "Related guide: Understanding Connect account balances"
+    },
+    {
+        "h1 1": "Balance Transactions",
+        "p 1": "Balance transactions represent funds moving through your Stripe account. Stripe creates them for every type of transaction that enters or leaves your Stripe account balance.",
+        "p 2": "Related guide: Balance transaction types"
+    },
+    {
+        "h1 1": "Charges",
+        "code 1": "Charge",
+        "p 1": "The Charge object represents a single attempt to move money into your Stripe account. PaymentIntent confirmation is the most common way to create Charges, but transferring money to a different Stripe account through Connect also creates Charges. Some legacy payment flows create Charges directly, which is not recommended for new integrations."
+    },
+    {
+        "h1 1": "Customers",
+        "p 1": "This object represents a customer of your business. Use it to create recurring charges and track payments that belong to the same customer.",
+        "p 2": "Related guide: Save a card during payment"
+    },
+    {
+        "h1 1": "Disputes",
+        "p 1": "A dispute occurs when a customer questions your charge with their card issuer. When this happens, you have the opportunity to respond to the dispute with evidence that shows that the charge is legitimate.",
+        "p 2": "Related guide: Disputes and fraud"
+    },
+    {
+        "h1 1": "Events",
+        "code 1": "Event",
+        "code 2": "charge.succeeded",
+        "code 3": "invoice.payment_failed",
+        "code 4": "customer.subscription.created",
+        "code 5": "charge.succeeded",
+        "code 6": "charge.succeeded",
+        "code 7": "invoice.payment_failed",
+        "code 8": "Event",
+        "code 9": "account",
+        "code 10": "Event",
+        "p 1": "Events are our way of letting you know when something interesting happens in your account. When an interesting event occurs, we create a new Event object. For example, when a charge succeeds, we create a charge.succeeded event, and when an invoice payment attempt fails, we create an invoice.payment_failed event. Certain API requests might create multiple events. For example, if you create a new subscription for a customer, you receive both a customer.subscription.created event and a charge.succeeded event.",
+        "p 2": "Events occur when the state of another API resource changes. The event\u2019s data field embeds the resource\u2019s state at the time of the change. For example, a charge.succeeded event contains a charge, and an invoice.payment_failed event contains an invoice.",
+        "p 3": "As with other API resources, you can use endpoints to retrieve an individual event or a list of events from the API. We also have a separate webhooks system for sending the Event objects directly to an endpoint on your server. You can manage webhooks in your account settings. Learn how to listen for events so that your integration can automatically trigger reactions.",
+        "p 4": "When using Connect, you can also receive event notifications that occur in connected accounts. For these events, there\u2019s an additional account attribute in the received Event object.",
+        "p 5": "We only guarantee access to events through the Retrieve Event API for 30 days."
+    },
+    {
+        "h1 1": "Files",
+        "p 1": "This object represents files hosted on Stripe\u2019s servers. You can upload files with the create file request (for example, when uploading dispute evidence). Stripe also creates files independetly (for example, the results of a Sigma scheduled query).",
+        "p 2": "Related guide: File upload guide"
+    },
+    {
+        "h1 1": "File Links",
+        "code 1": "File",
+        "code 2": "FileLink",
+        "code 3": "FileLink",
+        "p 1": "To share the contents of a File object with non-Stripe users, you can create a FileLink. FileLinks contain a URL that you can use to retrieve the contents of the file without authentication."
+    },
+    {
+        "h1 1": "Mandates",
+        "p 1": "A Mandate is a record of the permission that your customer gives you to debit their payment method."
+    },
+    {
+        "h1 1": "Payment Intents",
+        "p 1": "A PaymentIntent guides you through the process of collecting a payment from your customer. We recommend that you create exactly one PaymentIntent for each order or customer session in your system. You can reference the PaymentIntent later to see the history of payment attempts for a particular session.",
+        "p 2": "A PaymentIntent transitions through multiple statuses throughout its lifetime as it interfaces with Stripe.js to perform authentication flows and ultimately creates at most one successful charge.",
+        "p 3": "Related guide: Payment Intents API"
+    },
+    {
+        "h1 1": "Setup Intents",
+        "p 1": "A SetupIntent guides you through the process of setting up and saving a customer\u2019s payment credentials for future payments. For example, you can use a SetupIntent to set up and save your customer\u2019s card without immediately collecting a payment. Later, you can use PaymentIntents to drive the payment flow.",
+        "p 2": "Create a SetupIntent when you\u2019re ready to collect your customer\u2019s payment credentials. Don\u2019t maintain long-lived, unconfirmed SetupIntents because they might not be valid. The SetupIntent transitions through multiple statuses as it guides you through the setup process.",
+        "p 3": "Successful SetupIntents result in payment credentials that are optimized for future payments. For example, cardholders in certain regions might need to be run through Strong Customer Authentication during payment method collection to streamline later off-session payments. If you use the SetupIntent with a Customer, it automatically attaches the resulting payment method to that Customer after successful setup. We recommend using SetupIntents or setup_future_usage on PaymentIntents to save payment methods to prevent saving invalid or unoptimized payment methods.",
+        "p 4": "By using SetupIntents, you can reduce friction for your customers, even as regulations change over time.",
+        "p 5": "Related guide: Setup Intents API"
+    },
+    {
+        "h1 1": "Setup Attempts",
+        "p 1": "A SetupAttempt describes one attempted confirmation of a SetupIntent, whether that confirmation is successful or unsuccessful. You can use SetupAttempts to inspect details of a specific attempt at setting up a payment method using a SetupIntent."
+    },
+    {
+        "h1 1": "Payouts",
+        "code 1": "Payout",
+        "p 1": "A Payout object is created when you receive funds from Stripe, or when you initiate a payout to either a bank account or debit card of a connected Stripe account. You can retrieve individual payouts, and list all payouts. Payouts are made on varying schedules, depending on your country and industry.",
+        "p 2": "Related guide: Receiving payouts"
+    },
+    {
+        "h1 1": "Refunds",
+        "p 1": "Refund objects allow you to refund a previously created charge that isn\u2019t refunded yet. Funds are refunded to the credit or debit card that\u2019s initially charged.",
+        "p 2": "Related guide: Refunds"
+    },
+    {
+        "h1 1": "Tokens",
+        "p 1": "Tokenization is the process Stripe uses to collect sensitive card or bank account details, or personally identifiable information (PII), directly from your customers in a secure manner. A token representing this information is returned to your server to use. Use our recommended payments integrations to perform this process on the client-side. This guarantees that no sensitive card data touches your server, and allows your integration to operate in a PCI-compliant way.",
+        "p 2": "If you can\u2019t use client-side tokenization, you can also create tokens using the API with either your publishable or secret API key. If your integration uses this method, you\u2019re responsible for any PCI compliance that it might require, and you must keep your secret API key safe. Unlike with client-side tokenization, your customer\u2019s information isn\u2019t sent directly to Stripe, so we can\u2019t determine how it\u2019s handled or stored.",
+        "p 3": "You can\u2019t store or use tokens more than once. To store card or bank account information for later use, create Customer objects or Custom accounts. Radar, our integrated solution for automatic fraud protection, performs best with integrations that use client-side tokenization."
+    },
+    {
+        "h1 1": "Payment Methods",
+        "p 1": "PaymentMethod objects represent your customer\u2019s payment instruments. You can use them with PaymentIntents to collect payments or save them to Customer objects to store instrument details for future payments.",
+        "p 2": "Related guides: Payment Methods and More Payment Scenarios."
+    },
+    {
+        "h1 1": "Payment Method Configurations",
+        "code 1": "parent",
+        "p 1": "PaymentMethodConfigurations control which payment methods are displayed to your customers when you don\u2019t explicitly specify payment method types. You can have multiple configurations with different sets of payment methods for different scenarios.",
+        "p 2": "There are two types of PaymentMethodConfigurations. Which is used depends on the charge type:",
+        "p 3": "Direct configurations apply to payments created on your account, including Connect destination charges, Connect separate charges and transfers, and payments not involving Connect.",
+        "p 4": "Child configurations apply to payments created on your connected accounts using direct charges, and charges with the on_behalf_of parameter.",
+        "p 5": "Child configurations have a parent that sets default values and controls which settings connected accounts may override. You can specify a parent ID at payment time, and Stripe will automatically resolve the connected account\u2019s associated child configuration. Parent configurations are managed in the dashboard and are not available in this API.",
+        "p 6": "Related guides:"
+    },
+    {
+        "h1 1": "Payment Method Domains",
+        "p 1": "A payment method domain represents a web domain that you have registered with Stripe. Stripe Elements use registered payment method domains to control where certain payment methods are shown.",
+        "p 2": "Related guides: Payment method domains."
+    },
+    {
+        "h1 1": "Bank Accounts",
+        "code 1": "Customer",
+        "code 2": "Account",
+        "p 1": "These bank accounts are payment methods on Customer objects.",
+        "p 2": "On the other hand External Accounts are transfer destinations on Account objects for Custom accounts. They can be bank accounts or debit cards as well, and are documented in the links above.",
+        "p 3": "Related guide: Bank debits and transfers"
+    },
+    {
+        "h1 1": "Cash Balance",
+        "code 1": "Cash balance",
+        "p 1": "A customer\u2019s Cash balance represents real funds. Customers can add funds to their cash balance by sending a bank transfer. These funds can be used for payment and can eventually be paid out to your bank account."
+    },
+    {
+        "h1 1": "Cash Balance Transaction",
+        "p 1": "Customers with certain payments enabled have a cash balance, representing funds that were paid by the customer to a merchant, but have not yet been allocated to a payment. Cash Balance Transactions represent when funds are moved into or out of this balance. This includes funding by the customer, allocation to payments, and refunds to the customer."
+    },
+    {
+        "h1 1": "Cards",
+        "p 1": "You can store multiple cards on a customer in order to charge the customer later. You can also store multiple debit cards on a recipient in order to transfer to those cards later.",
+        "p 2": "Related guide: Card payments with Sources"
+    },
+    {
+        "h1 1": "Sources\nDeprecated",
+        "code 1": "Source",
+        "code 2": "Card",
+        "p 1": "Source objects allow you to accept a variety of payment methods. They represent a customer\u2019s payment instrument, and can be used with the Stripe API just like a Card object: once chargeable, they can be charged, or can be attached to customers.",
+        "p 2": "Stripe doesn\u2019t recommend using the deprecated Sources API. We recommend that you adopt the PaymentMethods API. This newer API provides access to our latest features and payment method types.",
+        "p 3": "Related guides: Sources API and Sources & Customers."
+    },
+    {
+        "h1 1": "Products",
+        "p 1": "Products describe the specific goods or services you offer to your customers. For example, you might offer a Standard and Premium version of your goods or service; each version would be a separate Product. They can be used in conjunction with Prices to configure pricing in Payment Links, Checkout, and Subscriptions.",
+        "p 2": "Related guides: Set up a subscription, share a Payment Link, accept payments with Checkout, and more about Products and Prices"
+    },
+    {
+        "h1 1": "Prices",
+        "p 1": "Prices define the unit cost, currency, and (optional) billing cycle for both recurring and one-time purchases of products. Products help you track inventory or provisioning, and prices help you track payment terms. Different physical goods or levels of service should be represented by products, and pricing options should be represented by prices. This approach lets you change prices without having to change your provisioning scheme.",
+        "p 2": "For example, you might have a single \u201cgold\u201d product that has prices for $10/month, $100/year, and \u20ac9 once.",
+        "p 3": "Related guides: Set up a subscription, create an invoice, and more about products and prices."
+    },
+    {
+        "h1 1": "Coupons",
+        "p 1": "A coupon contains information about a percent-off or amount-off discount you might want to apply to a customer. Coupons may be applied to subscriptions, invoices, checkout sessions, quotes, and more. Coupons do not work with conventional one-off charges or payment intents."
+    },
+    {
+        "h1 1": "Promotion Code",
+        "p 1": "A Promotion Code represents a customer-redeemable code for a coupon. It can be used to create multiple codes for a single coupon."
+    },
+    {
+        "h1 1": "Discounts",
+        "p 1": "A discount represents the actual application of a coupon or promotion code. It contains information about when the discount began, when it will end, and what it is applied to.",
+        "p 2": "Related guide: Applying discounts to subscriptions"
+    },
+    {
+        "h1 1": "Tax Code",
+        "p 1": "Tax codes classify goods and services for tax purposes."
+    },
+    {
+        "h1 1": "Tax Rate",
+        "p 1": "Tax rates can be applied to invoices, subscriptions and Checkout Sessions to collect tax.",
+        "p 2": "Related guide: Tax rates"
+    },
+    {
+        "h1 1": "Shipping Rates",
+        "p 1": "Shipping rates describe the price of shipping presented to your customers and applied to a purchase. For more information, see Charge for shipping."
+    },
+    {
+        "h1 1": "Sessions",
+        "p 1": "A Checkout Session represents your customer\u2019s session as they pay for one-time purchases or subscriptions through Checkout or Payment Links. We recommend creating a new Session each time your customer attempts to pay.",
+        "p 2": "Once payment is successful, the Checkout Session will contain a reference to the Customer, and either the successful PaymentIntent or an active Subscription.",
+        "p 3": "You can create a Checkout Session on your server and redirect to its URL to begin Checkout.",
+        "p 4": "Related guide: Checkout quickstart"
+    },
+    {
+        "h1 1": "Payment Link",
+        "p 1": "A payment link is a shareable URL that will take your customers to a hosted payment page. A payment link can be shared and used multiple times.",
+        "p 2": "When a customer opens a payment link it will open a new checkout session to render the payment page. You can use checkout session events to track payments through payment links.",
+        "p 3": "Related guide: Payment Links API"
+    },
+    {
+        "h1 1": "Credit Note",
+        "p 1": "Issue a credit note to adjust an invoice\u2019s amount after the invoice is finalized.",
+        "p 2": "Related guide: Credit notes"
+    },
+    {
+        "h1 1": "Customer Balance Transaction",
+        "code 1": "balance",
+        "code 2": "amount",
+        "p 1": "Each customer has a Balance value, which denotes a debit or credit that\u2019s automatically applied to their next invoice upon finalization. You may modify the value directly by using the update customer API, or by creating a Customer Balance Transaction, which increments or decrements the customer\u2019s balance by the specified amount.",
+        "p 2": "Related guide: Customer balance"
+    },
+    {
+        "h1 1": "Customer Portal Session",
+        "p 1": "The Billing customer portal is a Stripe-hosted UI for subscription and billing management.",
+        "p 2": "A portal configuration describes the functionality and features that you want to provide to your customers through the portal.",
+        "p 3": "A portal session describes the instantiation of the customer portal for a particular customer. By visiting the session\u2019s URL, the customer can manage their subscriptions and billing details. For security reasons, sessions are short-lived and will expire if the customer does not visit the URL. Create sessions on-demand when customers intend to manage their subscriptions and billing details.",
+        "p 4": "Learn more in the integration guide."
+    },
+    {
+        "h1 1": "Customer Portal Configuration",
+        "p 1": "A portal configuration describes the functionality and behavior of a portal session."
+    },
+    {
+        "h1 1": "Invoices",
+        "p 1": "Invoices are statements of amounts owed by a customer, and are either generated one-off, or generated periodically from a subscription.",
+        "p 2": "They contain invoice items, and proration adjustments that may be caused by subscription upgrades/downgrades (if necessary).",
+        "p 3": "If your invoice is configured to be billed through automatic charges, Stripe automatically finalizes your invoice and attempts payment. Note that finalizing the invoice, when automatic, does not happen immediately as the invoice is created. Stripe waits until one hour after the last webhook was successfully sent (or the last webhook timed out after failing). If you (and the platforms you may have connected to) have no webhooks configured, Stripe waits one hour after creation to finalize the invoice.",
+        "p 4": "If your invoice is configured to be billed by sending an email, then based on your email settings, Stripe will email the invoice to your customer and await payment. These emails can contain a link to a hosted page to pay the invoice.",
+        "p 5": "Stripe applies any customer credit on the account before determining the amount due for the invoice (i.e., the amount that will be actually charged). If the amount due for the invoice is less than Stripe\u2019s minimum allowed charge per currency, the invoice is automatically marked paid, and we add the amount due to the customer\u2019s credit balance which is applied to the next invoice.",
+        "p 6": "More details on the customer\u2019s credit balance are here.",
+        "p 7": "Related guide: Send invoices to customers"
+    },
+    {
+        "h1 1": "Invoice Items",
+        "code 1": "invoice",
+        "p 1": "Invoice Items represent the component lines of an invoice. An invoice item is added to an invoice by creating or updating it with an invoice field, at which point it will be included as an invoice line item within invoice.lines.",
+        "p 2": "Invoice Items can be created before you are ready to actually send the invoice. This can be particularly useful when combined with a subscription. Sometimes you want to add a charge or credit to a customer, but actually charge or credit the customer\u2019s card only at the end of a regular billing cycle. This is useful for combining several charges (to minimize per-transaction fees), or for having Stripe tabulate your usage-based billing totals.",
+        "p 3": "Related guides: Integrate with the Invoicing API, Subscription Invoices."
+    },
+    {
+        "h1 1": "Plans",
+        "p 1": "You can now model subscriptions more flexibly using the Prices API. It replaces the Plans API and is backwards compatible to simplify your migration.",
+        "p 2": "Plans define the base price, currency, and billing cycle for recurring purchases of products. Products help you track inventory or provisioning, and plans help you track pricing. Different physical goods or levels of service should be represented by products, and pricing options should be represented by plans. This approach lets you change prices without having to change your provisioning scheme.",
+        "p 3": "For example, you might have a single \u201cgold\u201d product that has plans for $10/month, $100/year, \u20ac9/month, and \u20ac90/year.",
+        "p 4": "Related guides: Set up a subscription and more about products and prices."
+    },
+    {
+        "h1 1": "Quote",
+        "p 1": "A Quote is a way to model prices that you\u2019d like to provide to a customer. Once accepted, it will automatically create an invoice, subscription or subscription schedule."
+    },
+    {
+        "h1 1": "Subscriptions",
+        "p 1": "Subscriptions allow you to charge a customer on a recurring basis.",
+        "p 2": "Related guide: Creating subscriptions"
+    },
+    {
+        "h1 1": "Subscription Items",
+        "p 1": "Subscription items allow you to create customer subscriptions with more than one plan, making it easy to represent complex billing relationships."
+    },
+    {
+        "h1 1": "Subscription Schedule",
+        "p 1": "A subscription schedule allows you to create and manage the lifecycle of a subscription by predefining expected changes.",
+        "p 2": "Related guide: Subscription schedules"
+    },
+    {
+        "h1 1": "Tax IDs",
+        "p 1": "You can add one or multiple tax IDs to a customer or account. Customer and account tax IDs get displayed on related invoices and credit notes.",
+        "p 2": "Related guides: Customer tax identification numbers, Account tax IDs"
+    },
+    {
+        "h1 1": "Test Clocks\nTest helper",
+        "p 1": "A test clock enables deterministic control over objects in testmode. With a test clock, you can create objects at a frozen time in the past or future, and advance to a specific future time to observe webhooks and state changes. After the clock advances, you can either validate the current state of your scenario (and test your assumptions), change the current state of your scenario (and test more complex scenarios), or keep advancing forward in time."
+    },
+    {
+        "h1 1": "Usage Records",
+        "p 1": "Usage records allow you to report customer usage and metrics to Stripe for metered billing of subscription prices.",
+        "p 2": "Related guide: Metered billing"
+    },
+    {
+        "h1 1": "Accounts",
+        "p 1": "This is an object representing a Stripe account. You can retrieve it to see properties on the account like its current requirements or if the account is enabled to make live charges or receive payouts.",
+        "p 2": "For Custom accounts, the properties below are always returned. For other accounts, some properties are returned until that account has started to go through Connect Onboarding. Once you create an Account Link for a Standard or Express account, some parameters are no longer returned. These are marked as Custom Only or Custom and Express below. Learn about the differences between accounts."
+    },
+    {
+        "h1 1": "Login Links",
+        "p 1": "Login Links are single-use login link for an Express account to access their Stripe dashboard."
+    },
+    {
+        "h1 1": "Account Links",
+        "p 1": "Account Links are the means by which a Connect platform grants a connected account permission to access Stripe-hosted applications, such as Connect Onboarding.",
+        "p 2": "Related guide: Connect Onboarding"
+    },
+    {
+        "h1 1": "Account Session",
+        "p 1": "An AccountSession allows a Connect platform to grant access to a connected account in Connect embedded components.",
+        "p 2": "We recommend that you create an AccountSession each time you need to display an embedded component to your user. Do not save AccountSessions to your database as they expire relatively quickly, and cannot be used more than once.",
+        "p 3": "Related guide: Connect embedded components"
+    },
+    {
+        "h1 1": "Application Fees",
+        "code 1": "Application Fee",
+        "p 1": "When you collect a transaction fee on top of a charge made for your user (using Connect), an Application Fee object is created in your account. You can list, retrieve, and refund application fees.",
+        "p 2": "Related guide: Collecting application fees"
+    },
+    {
+        "h1 1": "Application Fee Refunds",
+        "code 1": "Application Fee Refund",
+        "p 1": "Application Fee Refund objects allow you to refund an application fee that has previously been created but not yet refunded. Funds will be refunded to the Stripe account from which the fee was originally collected.",
+        "p 2": "Related guide: Refunding application fees"
+    },
+    {
+        "h1 1": "Capabilities",
+        "p 1": "This is an object representing a capability for a Stripe account.",
+        "p 2": "Related guide: Account capabilities"
+    },
+    {
+        "h1 1": "Country Specs",
+        "p 1": "Stripe needs to collect certain pieces of information about each account created. These requirements can differ depending on the account\u2019s country. The Country Specs API makes these rules available to your integration.",
+        "p 2": "You can also view the information from this API call as an online guide."
+    },
+    {
+        "h1 1": "External Bank Accounts",
+        "p 1": "External bank accounts are financial accounts associated with a Stripe platform\u2019s connected accounts for the purpose of transferring funds to or from the connected account\u2019s Stripe balance."
+    },
+    {
+        "h1 1": "External Account Cards",
+        "p 1": "External account cards are debit cards associated with a Stripe platform\u2019s connected accounts for the purpose of transferring funds to or from the connected accounts Stripe balance."
+    },
+    {
+        "h1 1": "Person",
+        "p 1": "This is an object representing a person associated with a Stripe account.",
+        "p 2": "A platform cannot access a Standard or Express account\u2019s persons after the account starts onboarding, such as after generating an account link for the account. See the Standard onboarding or Express onboarding documentation for information about platform prefilling and account onboarding steps.",
+        "p 3": "Related guide: Handling identity verification with the API"
+    },
+    {
+        "h1 1": "Top-ups",
+        "p 1": "To top up your Stripe balance, you create a top-up object. You can retrieve individual top-ups, as well as list all top-ups. Top-ups are identified by a unique, random ID.",
+        "p 2": "Related guide: Topping up your platform account"
+    },
+    {
+        "h1 1": "Transfers",
+        "code 1": "Transfer",
+        "p 1": "A Transfer object is created when you move funds between Stripe accounts as part of Connect.",
+        "p 2": "Before April 6, 2017, transfers also represented movement of funds from a Stripe account to a card or bank account. This behavior has since been split out into a Payout object, with corresponding payout endpoints. For more information, read about the transfer/payout split.",
+        "p 3": "Related guide: Creating separate charges and transfers"
+    },
+    {
+        "h1 1": "Transfer Reversals",
+        "p 1": "Stripe Connect platforms can reverse transfers made to a connected account, either entirely or partially, and can also specify whether to refund any related application fees. Transfer reversals add to the platform\u2019s balance and subtract from the destination account\u2019s balance.",
+        "p 2": "Reversing a transfer that was made for a destination charge is allowed only up to the amount of the charge. It is possible to reverse a transfer_group transfer only if the destination account has enough balance to cover the reversal.",
+        "p 3": "Related guide: Reversing transfers"
+    },
+    {
+        "h1 1": "Secrets",
+        "code 1": "secret",
+        "code 2": "account",
+        "code 3": "account",
+        "code 4": "user",
+        "code 5": "user",
+        "p 1": "Secret Store is an API that allows Stripe Apps developers to securely persist secrets for use by UI Extensions and app backends.",
+        "p 2": "The primary resource in Secret Store is a secret. Other apps can\u2019t view secrets created by an app. Additionally, secrets are scoped to provide further permission control.",
+        "p 3": "All Dashboard users and the app backend share account scoped secrets. Use the account scope for secrets that don\u2019t change per-user, like a third-party API key.",
+        "p 4": "A user scoped secret is accessible by the app backend and one specific Dashboard user. Use the user scope for per-user secrets like per-user OAuth tokens, where different users might have different permissions.",
+        "p 5": "Related guide: Store data between page reloads"
+    },
+    {
+        "h1 1": "Early Fraud Warning",
+        "p 1": "An early fraud warning indicates that the card issuer has notified us that a charge may be fraudulent.",
+        "p 2": "Related guide: Early fraud warnings"
+    },
+    {
+        "h1 1": "Reviews",
+        "p 1": "Reviews can be used to supplement automated fraud detection with human expertise.",
+        "p 2": "Learn more about Radar and reviewing payments here."
+    },
+    {
+        "h1 1": "Value Lists",
+        "p 1": "Value lists allow you to group values together which can then be referenced in rules.",
+        "p 2": "Related guide: Default Stripe lists"
+    },
+    {
+        "h1 1": "Value List Items",
+        "p 1": "Value list items allow you to add specific values to a given Radar value list, which can then be used in rules.",
+        "p 2": "Related guide: Managing list items"
+    },
+    {
+        "h1 1": "Authorizations",
+        "code 1": "Authorization",
+        "p 1": "When an issued card is used to make a purchase, an Issuing Authorization object is created. Authorizations must be approved for the purchase to be completed successfully.",
+        "p 2": "Related guide: Issued card authorizations"
+    },
+    {
+        "h1 1": "Cardholders",
+        "code 1": "Cardholder",
+        "p 1": "An Issuing Cardholder object represents an individual or business entity who is issued cards.",
+        "p 2": "Related guide: How to create a cardholder"
+    },
+    {
+        "h1 1": "Cards",
+        "p 1": "You can create physical or virtual cards that are issued to cardholders."
+    },
+    {
+        "h1 1": "Disputes",
+        "p 1": "As a card issuer, you can dispute transactions that the cardholder does not recognize, suspects to be fraudulent, or has other issues with.",
+        "p 2": "Related guide: Issuing disputes"
+    },
+    {
+        "h1 1": "Funding Instructions",
+        "p 1": "Funding Instructions contain reusable bank account and routing information. Push funds to these addresses via bank transfer to top up Issuing Balances."
+    },
+    {
+        "h1 1": "Tokens\nPreview feature",
+        "p 1": "An issuing token object is created when an issued card is added to a digital wallet. As a card issuer, you can view and manage these tokens through Stripe."
+    },
+    {
+        "h1 1": "Transactions",
+        "code 1": "Transaction",
+        "p 1": "Any use of an issued card that results in funds entering or leaving your Stripe account, such as a completed purchase or refund, is represented by an Issuing Transaction object.",
+        "p 2": "Related guide: Issued card transactions"
+    },
+    {
+        "h1 1": "Connection Token",
+        "p 1": "A Connection Token is used by the Stripe Terminal SDK to connect to a reader.",
+        "p 2": "Related guide: Fleet management"
+    },
+    {
+        "h1 1": "Location",
+        "p 1": "A Location represents a grouping of readers.",
+        "p 2": "Related guide: Fleet management"
+    },
+    {
+        "h1 1": "Reader",
+        "p 1": "A Reader represents a physical device for accepting payment details.",
+        "p 2": "Related guide: Connecting to a reader"
+    },
+    {
+        "h1 1": "Terminal Hardware Order\nPreview feature",
+        "p 1": "A TerminalHardwareOrder represents an order for Terminal hardware, containing information such as the price, shipping information and the items ordered."
+    },
+    {
+        "h1 1": "Terminal Hardware Product\nPreview feature",
+        "p 1": "A TerminalHardwareProduct is a category of hardware devices that are generally similar, but may have variations depending on the country it\u2019s shipped to.",
+        "p 2": "TerminalHardwareSKUs represent variations within the same Product (for example, a country specific device). For example, WisePOS E is a TerminalHardwareProduct and a WisePOS E - US and WisePOS E - UK are TerminalHardwareSKUs."
+    },
+    {
+        "h1 1": "Terminal Hardware SKU\nPreview feature",
+        "p 1": "A TerminalHardwareSKU represents a SKU for Terminal hardware. A SKU is a representation of a product available for purchase, containing information such as the name, price, and images."
+    },
+    {
+        "h1 1": "Terminal Hardware Shipping Method\nPreview feature",
+        "p 1": "A TerminalHardwareShipping represents a Shipping Method for Terminal hardware. A Shipping Method is a country-specific representation of a way to ship hardware, containing information such as the country, name, and expected delivery date."
+    },
+    {
+        "h1 1": "Configuration",
+        "p 1": "A Configurations object represents how features should be configured for terminal readers."
+    },
+    {
+        "h1 1": "Financial Accounts",
+        "p 1": "Stripe Treasury provides users with a container for money called a FinancialAccount that is separate from their Payments balance. FinancialAccounts serve as the source and destination of Treasury\u2019s money movement APIs."
+    },
+    {
+        "h1 1": "Financial Account Features",
+        "code 1": "status",
+        "code 2": "status_details",
+        "p 1": "Encodes whether a FinancialAccount has access to a particular Feature, with a status enum and associated status_details. Stripe or the platform can control Features via the requested field."
+    },
+    {
+        "h1 1": "Transactions",
+        "p 1": "Transactions represent changes to a FinancialAccount\u2019s balance."
+    },
+    {
+        "h1 1": "Transaction Entries",
+        "p 1": "TransactionEntries represent individual units of money movements within a single Transaction."
+    },
+    {
+        "h1 1": "Outbound Transfers",
+        "code 1": "/v1/test_helpers/treasury/outbound_transfers",
+        "p 1": "Use OutboundTransfers to transfer funds from a FinancialAccount to a PaymentMethod belonging to the same entity. To send funds to a different party, use OutboundPayments instead. You can send funds over ACH rails or through a domestic wire transfer to a user\u2019s own external bank account.",
+        "p 2": "Simulate OutboundTransfer state changes with the /v1/test_helpers/treasury/outbound_transfers endpoints. These methods can only be called on test mode objects."
+    },
+    {
+        "h1 1": "Outbound Payments",
+        "code 1": "/v1/test_helpers/treasury/outbound_payments",
+        "p 1": "Use OutboundPayments to send funds to another party\u2019s external bank account or FinancialAccount. To send money to an account belonging to the same user, use an OutboundTransfer.",
+        "p 2": "Simulate OutboundPayment state changes with the /v1/test_helpers/treasury/outbound_payments endpoints. These methods can only be called on test mode objects."
+    },
+    {
+        "h1 1": "Inbound Transfers",
+        "p 1": "Use InboundTransfers to add funds to your FinancialAccount via a PaymentMethod that is owned by you. The funds will be transferred via an ACH debit."
+    },
+    {
+        "h1 1": "Received Credits",
+        "p 1": "ReceivedCredits represent funds sent to a FinancialAccount (for example, via ACH or wire). These money movements are not initiated from the FinancialAccount."
+    },
+    {
+        "h1 1": "Received Debits",
+        "p 1": "ReceivedDebits represent funds pulled from a FinancialAccount. These are not initiated from the FinancialAccount."
+    },
+    {
+        "h1 1": "Credit Reversals",
+        "p 1": "You can reverse some ReceivedCredits depending on their network and source flow. Reversing a ReceivedCredit leads to the creation of a new object known as a CreditReversal."
+    },
+    {
+        "h1 1": "Debit Reversals",
+        "p 1": "You can reverse some ReceivedDebits depending on their network and source flow. Reversing a ReceivedDebit leads to the creation of a new object known as a DebitReversal."
+    },
+    {
+        "h1 1": "Scheduled Queries",
+        "code 1": "sigma.scheduled_query_run.created",
+        "code 2": "ScheduledQueryRun",
+        "p 1": "If you have scheduled a Sigma query, you\u2019ll receive a sigma.scheduled_query_run.created webhook each time the query runs. The webhook contains a ScheduledQueryRun object, which you can use to retrieve the query results."
+    },
+    {
+        "h1 1": "Report Runs",
+        "p 1": "The Report Run object represents an instance of a report type generated with specific run parameters. Once the object is created, Stripe begins processing the report. When the report has finished running, it will give you a reference to a file where you can retrieve your results. For an overview, see API Access to Reports.",
+        "p 2": "Note that certain report types can only be run based on your live-mode data (not test-mode data), and will error when queried without a live-mode API key."
+    },
+    {
+        "h1 1": "Report Types",
+        "p 1": "The Report Type resource corresponds to a particular type of report, such as the \u201cActivity summary\u201d or \u201cItemized payouts\u201d reports. These objects are identified by an ID belonging to a set of enumerated values. See API Access to Reports documentation for those Report Type IDs, along with required and optional parameters.",
+        "p 2": "Note that certain report types can only be run based on your live-mode data (not test-mode data), and will error when queried without a live-mode API key."
+    },
+    {
+        "h1 1": "Accounts",
+        "p 1": "A Financial Connections Account represents an account that exists outside of Stripe, to which you have been granted some degree of access."
+    },
+    {
+        "h1 1": "Account Owner",
+        "p 1": "Describes an owner of an account."
+    },
+    {
+        "h1 1": "Session",
+        "p 1": "A Financial Connections Session is the secure way to programmatically launch the client-side Stripe.js modal that lets your users link their accounts."
+    },
+    {
+        "h1 1": "Transactions",
+        "p 1": "A Transaction represents a real transaction that affects a Financial Connections Account balance."
+    },
+    {
+        "h1 1": "Tax Calculations",
+        "p 1": "A Tax Calculation allows you to calculate the tax to collect from your customer.",
+        "p 2": "Related guide: Calculate tax in your custom payment flow"
+    },
+    {
+        "h1 1": "Tax Registrations",
+        "code 1": "Registration",
+        "code 2": "Registration",
+        "p 1": "A Tax Registration lets us know that your business is registered to collect tax on payments within a region, enabling you to automatically collect tax.",
+        "p 2": "Stripe doesn\u2019t register on your behalf with the relevant authorities when you create a Tax Registration object. For more information on how to register to collect tax, see our guide.",
+        "p 3": "Related guide: Using the Registrations API"
+    },
+    {
+        "h1 1": "Tax Transactions",
+        "p 1": "A Tax Transaction records the tax collected from or refunded to your customer.",
+        "p 2": "Related guide: Calculate tax in your custom payment flow"
+    },
+    {
+        "h1 1": "Tax Settings",
+        "code 1": "Settings",
+        "p 1": "You can use Tax Settings to manage configurations used by Stripe Tax calculations.",
+        "p 2": "Related guide: Using the Settings API"
+    },
+    {
+        "h1 1": "Verification Session",
+        "p 1": "A VerificationSession guides you through the process of collecting and verifying the identities of your users. It contains details about the type of verification, such as what verification check to perform. Only create one VerificationSession for each verification in your system.",
+        "p 2": "A VerificationSession transitions through multiple statuses throughout its lifetime as it progresses through the verification flow. The VerificationSession contains the user\u2019s verified data after verification checks are complete.",
+        "p 3": "Related guide: The Verification Sessions API"
+    },
+    {
+        "h1 1": "Verification Report",
+        "code 1": "type",
+        "code 2": "options",
+        "code 3": "document",
+        "code 4": "id_number",
+        "code 5": "selfie",
+        "p 1": "A VerificationReport is the result of an attempt to collect and verify data from a user. The collection of verification checks performed is determined from the type and options parameters used. You can find the result of each verification check performed in the appropriate sub-resource: document, id_number, selfie.",
+        "p 2": "Each VerificationReport contains a copy of any data collected by the user as well as reference IDs which can be used to access collected images through the FileUpload API. To configure and create VerificationReports, use the VerificationSession API.",
+        "p 3": "Related guides: Accessing verification results."
+    },
+    {
+        "h1 1": "Crypto Onramp Session",
+        "p 1": "A Crypto Onramp Session represents your customer\u2019s session as they purchase cryptocurrency through Stripe. Once payment is successful, Stripe will fulfill the delivery of cryptocurrency to your user\u2019s wallet and contain a reference to the crypto transaction ID.",
+        "p 2": "You can create an onramp session on your server and embed the widget on your frontend. Alternatively, you can redirect your users to the standalone hosted onramp.",
+        "p 3": "Related guide: Integrate the onramp"
+    },
+    {
+        "h1 1": "Crypto Onramp Quotes",
+        "p 1": "Crypto Onramp Quotes are estimated quotes for onramp conversions into all the different cryptocurrencies on different networks. The Quotes API allows you to display quotes in your product UI before directing the user to the onramp widget.",
+        "p 2": "Related guide: Quotes API"
+    },
+    {
+        "h1 1": "Climate Order",
+        "p 1": "Orders represent your intent to purchase a particular Climate product. When you create an order, the payment is deducted from your merchant balance."
+    },
+    {
+        "h1 1": "Climate Product",
+        "p 1": "A Climate product represents a type of carbon removal unit available for reservation. You can retrieve it to see the current price and availability."
+    },
+    {
+        "h1 1": "Climate Supplier",
+        "p 1": "A supplier of carbon removal."
+    },
+    {
+        "h1 1": "Forwarding Request\nPreview feature",
+        "p 1": "Instructs Stripe to make a request on your behalf using the destination URL and HTTP method in the config. A config is set up for each destination URL by Stripe at the time of onboarding. Stripe verifies requests with your credentials in the config, and injects card details from the payment_method into the request.",
+        "p 2": "Stripe redacts all sensitive fields and headers, including authentication credentials and card numbers, before storing the request and response data in the forwarding Request object, which are subject to a 30-day retention period.",
+        "p 3": "You can provide a Stripe idempotency key to make sure that requests with the same key result in only one outbound request. The Stripe idempotency key provided should be unique and different from any idempotency keys provided on the underlying third-party request.",
+        "p 4": "Forwarding Requests are synchronous requests that return a response or time out according to Stripe\u2019s limits."
+    },
+    {
+        "h1 1": "Webhook Endpoints",
+        "p 1": "You can configure webhook endpoints via the API to be notified about events that happen in your Stripe account or connected accounts.",
+        "p 2": "Most users configure webhooks from the dashboard, which provides a user interface for registering and testing your webhook endpoints.",
+        "p 3": "Related guide: Setting up webhooks"
+    }
+]
